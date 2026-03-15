@@ -59,6 +59,10 @@ Both matrices are **sparse** — not every pair needs an explicit decision. Miss
 - **No backend** — all analysis runs in C++ compiled to WASM in the browser.
 - **Open sets** — adding an option or property never invalidates existing data; it adds unfilled cells to the sparse matrices.
 
+### Algorithm Design
+
+See [ALGORITHMS.md](ALGORITHMS.md) for full algorithm options, math, WASM feasibility, and visualisation decisions.
+
 ### Analysis Engine
 - Spearman/Kendall rank correlation between property slider sums and final ranking
 - Compares `declaredPriority` against actual correlation to classify each property:
