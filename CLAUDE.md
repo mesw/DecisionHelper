@@ -30,19 +30,24 @@ emmake cmake --build build-wasm
 
 ## Architecture
 
-### User Flow (5 Phases)
+### User Flow (6 Phases)
 1. **Add Options** — open set, extensible at any time
-2. **Pairwise Ranking** — adaptive comparison sort (minimizes pairs shown); user swipes/taps to pick winner
+2. **Pairwise Ranking** — adaptive comparison sort (minimizes pairs shown via transitivity); user swipes/taps to pick winner; gut feel only, no analysis yet
 3. **Define Properties** — open set of decision criteria, independent of options, extensible at any time
-4. **Property Attribution** — for each option pair, user moves per-property sliders (how much better is A vs B on each property)
-5. **Analysis** — correlate slider data against ranking to reveal dominant/surprising/inconsistent properties
+4. **Prioritise Properties** — user drag-ranks properties by declared importance (most → least); sets `declaredPriority`; enables declared-vs-actual contrast in analysis
+5. **Property Attribution** — for each *selected* option pair (smart subset, not all n²), user moves per-property sliders (how much better is A vs B); pairs chosen by information gain
+6. **Analysis** — correlate slider data against ranking; compare declared priority vs actual correlation; show values-based alternative ranking; surface hidden drivers and inconsistencies
+
+**Post-analysis loops (no full restart needed):**
+- **Add properties** → return to Phase 3, then skip Phase 4, go straight to Phase 5 with smart pair selection for new properties only
+- **Add option** → binary search insertion (≤ ⌈log₂ n⌉ ranking questions), then smart attribution against high-influence properties only (≤ 3 pairs), then analysis updates inline
 
 ### Data Model
 
 ```
 DecisionSession
-├── options: Set<Option>          // { id, label }
-├── properties: Set<Property>     // { id, label }
+├── options: Set<Option>          // { id, label, rankPosition }
+├── properties: Set<Property>     // { id, label, declaredPriority }
 ├── comparisons: Map<PairKey, int>          // ranking decisions (-1, 0, 1), sparse
 └── attributions: Map<PairKey, Map<PropertyId, float>>  // slider values, sparse
 ```
@@ -56,5 +61,11 @@ Both matrices are **sparse** — not every pair needs an explicit decision. Miss
 
 ### Analysis Engine
 - Spearman/Kendall rank correlation between property slider sums and final ranking
-- Identifies: dominant properties, surprising drivers (low declared weight but high actual correlation), inconsistencies (property ratings contradict ranking direction)
+- Compares `declaredPriority` against actual correlation to classify each property:
+  - **Dominant driver** — high correlation, regardless of declared rank
+  - **Surprising/hidden** — low declared priority but high actual correlation
+  - **Overrated** — high declared priority but low/no actual correlation
+  - **Inconsistency** — correlation direction contradicts ranking direction
+- Computes a values-based alternative ranking from declared priorities; surfaces gap vs gut ranking
 - Updates incrementally as more attributions are filled in
+- Pair selection uses information gain to minimise questions while reaching a confidence threshold

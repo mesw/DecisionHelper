@@ -16,6 +16,9 @@ flowchart LR
     B -->|add more options| A
     C -->|add more properties| C
     F -->|add properties| C
+    F -->|add option| B2[Binary search\ninsertion]
+    B2 --> E2[Smart attribution\nnew option only]
+    E2 --> F
 ```
 
 ---
@@ -149,7 +152,7 @@ The user names what they *consciously* think matters when ordering food.
 
 ---
 
-## Phase 4 — Prioritise Properties *(new)*
+## Phase 4 — Prioritise Properties
 
 The user drag-ranks the properties from most to least important **before** doing any per-option comparisons. This is their declared value system — what they *think* should drive the decision.
 
@@ -187,11 +190,11 @@ The user drag-ranks the properties from most to least important **before** doing
 
 ## Phase 5 — Property Attribution (first pass)
 
-For each option pair, sliders express how much better one option is on each property.
+For each option pair, sliders express how much better one option is on each property. The app selects pairs adaptively — pairs that can be inferred from others are skipped automatically.
 
 ```
 ┌─────────────────────────────────────────────┐
-│  ← Priority           1 of 6 pairs     ⋮   │
+│  ← Priority      up to 4 of 6 pairs    ⋮   │
 │─────────────────────────────────────────────│
 │                                             │
 │  Pizza  vs  Sushi                           │
@@ -215,7 +218,7 @@ For each option pair, sliders express how much better one option is on each prop
 │  Delivery time                              │
 │  Pizza  ─────────────────●─────  Sushi      │
 │                                             │
-│  ████░░░░░░░░░░░░  17% complete             │
+│  ████░░░░░░░░░░░░  1 of ≤4 pairs            │
 │          [ → Next pair ]                    │
 └─────────────────────────────────────────────┘
 ```
@@ -287,7 +290,7 @@ For each option pair, sliders express how much better one option is on each prop
 
 ---
 
-## Phase 3 — Add More Properties (second pass)
+## ↩ Loop — Add More Properties (return to Phase 3)
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -318,66 +321,82 @@ For each option pair, sliders express how much better one option is on each prop
 
 ---
 
-## Phase 4 — Re-prioritise (second pass)
-
-New properties are appended at the bottom. The user can drag them into their priority order.
-
-```
-┌─────────────────────────────────────────────┐
-│  ← Properties       Priority Ranking    ⋮   │
-│─────────────────────────────────────────────│
-│                                             │
-│  You added new factors. Where do they fit?  │
-│                                             │
-│  ┌─────────────────────────────────────┐   │
-│  │  ≡  1.  Healthiness          ↕      │   │
-│  │  ≡  2.  Freshness            ↕      │   │
-│  │  ≡  3.  Tastiness            ↕      │   │
-│  │  ≡  4.  Price                ↕      │   │
-│  │  ≡  5.  Delivery time        ↕      │   │
-│  │  ── new ──────────────────────      │   │
-│  │  ≡  6.  Fish content      ★ new ↕   │   │
-│  │  ≡  7.  Cheese content    ★ new ↕   │   │
-│  │  ≡  8.  Salt level        ★ new ↕   │   │
-│  └─────────────────────────────────────┘   │
-│                                             │
-│          [ Continue → ]                     │
-└─────────────────────────────────────────────┘
-```
-
----
-
 ## Phase 5 — Property Attribution (second pass, new properties only)
 
-Existing slider data is preserved. Only the three new properties are asked.
+The app jumps straight here — no re-prioritising. Existing slider data is preserved; only the three new properties need answers.
+
+More importantly: **not all pairs are shown**. The app selects the smallest set of pairs that gives statistically useful signal for the new properties, using the existing ranking and prior attribution data to infer the rest.
 
 ```
 ┌─────────────────────────────────────────────┐
-│  ← Priority           1 of 6 pairs     ⋮   │
+│  ← Properties      2 of 6 pairs needed ⋮   │
 │─────────────────────────────────────────────│
 │                                             │
 │  Pizza  vs  Sushi        (new factors only) │
+│                                             │
+│  We picked this pair because it spans       │
+│  the biggest ranking gap — your answer      │
+│  will tell us the most.                     │
 │                                             │
 │  Fish content                               │
 │  Pizza  ──────●────────────────  Sushi      │
 │         much    ≈     much                  │
 │         better        better                │
-│  (Sushi has much more fish)                 │
 │                                             │
 │  Cheese content                             │
 │  Pizza  ●──────────────────────  Sushi      │
-│  (Pizza has vastly more cheese)             │
 │                                             │
 │  Salt level                                 │
 │  Pizza  ─────────────●─────────  Sushi      │
-│  (roughly equal)                            │
 │                                             │
-│  ████░░░░░░░░░░░░  17% complete             │
+│  ████████████░░░░  1 of 2 pairs done        │
 │          [ → Next pair ]                    │
 └─────────────────────────────────────────────┘
 ```
 
-> Across all pairs: **Pizza, Burger, Indian** score high on cheese content. **Sushi and Salad** score low — matching the gut ranking exactly.
+```
+┌─────────────────────────────────────────────┐
+│  ← Properties      2 of 6 pairs needed ⋮   │
+│─────────────────────────────────────────────│
+│                                             │
+│  Burger  vs  Salad       (new factors only) │
+│                                             │
+│  Last question — this pair resolves the     │
+│  remaining ambiguity in the middle of       │
+│  your ranking.                              │
+│                                             │
+│  Fish content                               │
+│  Burger ────────────────●──────  Salad      │
+│                                             │
+│  Cheese content                             │
+│  Burger ●──────────────────────  Salad      │
+│                                             │
+│  Salt level                                 │
+│  Burger ──────────────●────────  Salad      │
+│                                             │
+│  ████████████████░░  almost done…           │
+│          [ → See results ]                  │
+└─────────────────────────────────────────────┘
+```
+
+> Only **2 of a possible 6 pairs** were needed. The remaining 4 are inferred via transitivity and regression from existing data and the gut ranking.
+
+**Selection logic (to be designed — concept shown here):**
+
+```mermaid
+flowchart TD
+    START["New properties added\n(Fish · Cheese · Salt)"]
+    SCORE["Score each pair by\ninformation gain:\nhow much ranking variance\nwould this answer resolve?"]
+    PICK["Pick highest-scoring pair\nnot yet answered"]
+    ASK["Show pair to user"]
+    UPDATE["Update model with answer\nRe-score remaining pairs"]
+    CHECK{"Confidence threshold\nreached for all\nnew properties?"}
+    DONE["→ Phase 6 Analysis"]
+
+    START --> SCORE --> PICK --> ASK --> UPDATE --> CHECK
+    CHECK -->|no| PICK
+    CHECK -->|yes| DONE
+```
 
 ---
 
@@ -436,6 +455,8 @@ Existing slider data is preserved. Only the three new properties are asked.
 │  ╚═════════════════════════════════════╝   │
 │                                             │
 │  [ Order Pizza  ]   [ Switch to Sushi ]     │
+│                                             │
+│  [ + Add another option ]                   │
 └─────────────────────────────────────────────┘
 ```
 
@@ -447,6 +468,152 @@ xychart-beta
     x-axis ["Pizza vs Sushi", "Pizza vs Salad", "Burger vs Sushi", "Burger vs Salad", "Indian vs Sushi", "Indian vs Salad"]
     y-axis "Attribution (left = A better)" -1 --> 1
     bar [0.95, 0.90, 0.85, 0.88, 0.60, 0.65]
+```
+
+---
+
+## Adding a Late Option — "What about Thai?"
+
+The user remembers there's a new Thai place and wonders if it changes anything.
+
+```
+┌─────────────────────────────────────────────┐
+│  ← Results          Add an option       ⋮   │
+│─────────────────────────────────────────────│
+│                                             │
+│  ┌─────────────────────────────────────┐   │
+│  │  Thai                               │   │
+│  └─────────────────────────────────────┘   │
+│                       [ + Add Option ]      │
+│                                             │
+│  We'll ask just enough questions to place   │
+│  Thai in your ranking. No need to redo      │
+│  everything.                                │
+└─────────────────────────────────────────────┘
+```
+
+### Step 1 — Place it in the ranking (binary search)
+
+The existing ranking has 5 options. To insert a new one we need at most ⌈log₂ 5⌉ = **3 comparisons**. The app starts in the middle and narrows from there.
+
+```
+┌─────────────────────────────────────────────┐
+│  Quick ranking        question 1 of ≤3  ⋮   │
+│─────────────────────────────────────────────│
+│                                             │
+│  Which do you prefer?                       │
+│                                             │
+│  ╔═════════════════════════╗               │
+│  ║         Thai            ║  ← tap        │
+│  ╚═════════════════════════╝               │
+│              vs                             │
+│  ╔═════════════════════════╗               │
+│  ║        Indian           ║  ← tap        │
+│  ║   (middle of ranking)   ║               │
+│  ╚═════════════════════════╝               │
+│                                             │
+│        [ ≈ Too close to call ]              │
+└─────────────────────────────────────────────┘
+```
+
+> Indian is the median option (#3 of 5). One answer splits the search space in half.
+
+User picks **Thai**. Thai beats the median → it belongs in the top half (above Indian). One more comparison needed:
+
+```
+┌─────────────────────────────────────────────┐
+│  Quick ranking        question 2 of ≤3  ⋮   │
+│─────────────────────────────────────────────│
+│                                             │
+│  Which do you prefer?                       │
+│                                             │
+│  ╔═════════════════════════╗               │
+│  ║         Thai            ║  ← tap        │
+│  ╚═════════════════════════╝               │
+│              vs                             │
+│  ╔═════════════════════════╗               │
+│  ║        Burger           ║  ← tap        │
+│  ║   (#2 in your ranking)  ║               │
+│  ╚═════════════════════════╝               │
+│                                             │
+│        [ ≈ Too close to call ]              │
+└─────────────────────────────────────────────┘
+```
+
+User picks **Burger**. Thai loses to Burger → Thai slots in at **#3**, pushing Indian to #4 and Salad to #5. Done in 2 questions.
+
+```mermaid
+flowchart TD
+    START["5 existing options\nNew: Thai"]
+    Q1["Compare Thai vs Indian\n(rank #3 — median)"]
+    Q1 -->|Thai wins| Q2A["Compare Thai vs Burger\n(rank #2 — upper median)"]
+    Q1 -->|Indian wins| Q2B["Compare Thai vs Sushi\n(rank #4 — lower median)"]
+    Q2A -->|Thai wins| R1["Thai → #2\nBurger stays #2 → shifts to #3"]
+    Q2A -->|Burger wins| R2["Thai → #3 ✓\ndone in 2 questions"]
+    Q2B -->|Thai wins| R3["Thai → #4"]
+    Q2B -->|Sushi wins| R4["Thai → #5"]
+    R1 --> ATTR
+    R2 --> ATTR["→ Step 2: Attribution\n(smart pair selection)"]
+    R3 --> ATTR
+    R4 --> ATTR
+```
+
+### Step 2 — Attribution for the new option (minimal pairs only)
+
+Thai is now placed at #3. We only need attribution comparisons that involve Thai — and only the pairs most likely to confirm or challenge its position.
+
+```
+┌─────────────────────────────────────────────┐
+│  Quick attribution    question 1 of ≤3  ⋮   │
+│─────────────────────────────────────────────│
+│                                             │
+│  Thai  vs  Pizza                            │
+│  (your #1 — worth checking against Thai)    │
+│                                             │
+│  Cheese content       ★ dominant driver     │
+│  Thai   ────────────●──────────  Pizza      │
+│                                             │
+│  Fish content                               │
+│  Thai   ──────────────────●────  Pizza      │
+│                                             │
+│  Healthiness          ★ declared #1         │
+│  Thai   ──────────────●────────  Pizza      │
+│                                             │
+│  Only showing properties that matter most   │
+│  based on your prior analysis.              │
+│                                             │
+│  ████████████░░░░  1 of ≤3 pairs            │
+│          [ → Next ]                         │
+└─────────────────────────────────────────────┘
+```
+
+> The app only shows the properties that were previously identified as high-influence (cheese content, fish content) plus the user's declared top priority (healthiness). Low-correlation properties like delivery time are skipped — they won't change the outcome.
+
+After 2 attribution pairs the confidence threshold is met. Results update immediately:
+
+### Updated Analysis — Thai inserted
+
+```
+┌─────────────────────────────────────────────┐
+│  Updated ranking                            │
+│─────────────────────────────────────────────│
+│                                             │
+│  1. Pizza    ██████████  (unchanged)        │
+│  2. Burger   ███████     (unchanged)        │
+│  3. Thai     █████    ← new entry           │
+│  4. Indian   ████       (was #3)            │
+│  5. Sushi    ███        (unchanged)         │
+│  6. Salad    █          (unchanged)         │
+│                                             │
+│  Thai is not a winner — it lands mid-table. │
+│                                             │
+│  Why: Thai scores well on healthiness       │
+│  but low on cheese content (your true       │
+│  driver). Consistent with your pattern.     │
+│                                             │
+│  [ Order Pizza  ]   [ Switch to Thai? ]     │
+│  [ + Add another option ]                   │
+└─────────────────────────────────────────────┘
 ```
 
 ---
@@ -481,8 +648,8 @@ flowchart TD
     P6 -->|add properties| P3
     P6 -->|start over| P1
 
-    P3 -. "new property added →\nre-enter priority phase" .-> P4
-    P4 -. "only new property\nsliders shown" .-> P5
+    P3 -. "new property →\nskip Phase 4\nstraight to attribution" .-> P5
+    P6 -. "add option →\nbinary search insertion\nthen smart attribution" .-> P6
 ```
 
 ---
@@ -539,5 +706,5 @@ erDiagram
 | Low R² on all properties | Show "unexplained" banner, prompt to add more properties |
 | Gut ranking matches values-based ranking | Analysis confirms alignment: "Your gut and your values agree" |
 | Gut ranking contradicts values-based ranking | Show gap, offer both choices as CTAs |
-| Add property after attribution | User re-enters Phase 4 to place it in priority order; only new sliders shown in Phase 5 |
-| Add option after ranking | Prompt to rank new option against existing ones |
+| Add property after attribution | Skips Phase 4 (priority ranking); goes straight to Phase 5 with smart pair selection for new properties only |
+| Add option after analysis | Binary search insertion: ≤ ⌈log₂ n⌉ ranking questions, then ≤ 3 attribution pairs against highest-influence properties only |
