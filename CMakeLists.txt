@@ -9,9 +9,7 @@ qt_standard_project_setup(REQUIRES 6.5)
 qt_add_executable(DecisionHelper
     src/main.cpp
     src/core/Session.cpp
-    src/core/RankingEngine.cpp
-    src/core/AttributionEngine.cpp
-    src/core/AnalysisEngine.cpp
+    src/core/DecisionEngine.cpp
     src/core/Storage.cpp
     src/controller/SessionController.cpp
 )
@@ -23,31 +21,63 @@ qt_add_qml_module(DecisionHelper
         src/qml/main.qml
         src/qml/PhaseRouter.qml
         src/qml/components/AppHeader.qml
-        src/qml/components/SweetSpotProgressBar.qml
-        src/qml/components/DisclosurePanel.qml
-        src/qml/components/PropertyDetailSheet.qml
-        src/qml/phase1/AddOptionsPage.qml
-        src/qml/phase2/OptionCard.qml
-        src/qml/phase2/PairwiseRankingPage.qml
-        src/qml/phase2/RankingResultPage.qml
-        src/qml/phase3/DefinePropertiesPage.qml
-        src/qml/phase4/PrioritisePropertiesPage.qml
-        src/qml/phase5/AttributionCard.qml
-        src/qml/phase5/AttributionPage.qml
-        src/qml/phase6/InsightCard.qml
-        src/qml/phase6/RankingComparison.qml
-        src/qml/phase6/CorrelationChart.qml
-        src/qml/phase6/ScatterPlot.qml
-        src/qml/phase6/AnalysisPage.qml
+        src/qml/components/DecisionChoiceCard.qml
+        src/qml/phase1/NameDecisionPage.qml
+        src/qml/phase2/AddOptionsPage.qml
+        src/qml/phase3/DefineCriteriaPage.qml
+        src/qml/phase4/OptionMicroDecisionPage.qml
+        src/qml/phase5/CriteriaWeightingPage.qml
+        src/qml/phase6/ResultsPage.qml
 )
+
+# ── Emoji Font (WASM & Cross-Platform) ─────────────────────────────────────────
+# WASM environments do not have host system emoji fonts (e.g. Segoe UI Emoji / Apple Color Emoji).
+# We bundle Google Noto Color Emoji to render emojis cleanly in the browser.
+set(EMOJI_FONT "")
+foreach(candidate
+    "${CMAKE_SOURCE_DIR}/fonts/NotoColorEmoji.ttf"
+    "${CMAKE_SOURCE_DIR}/third_party/noto-emoji/fonts/NotoColorEmoji.ttf"
+    "${CMAKE_SOURCE_DIR}/../checklist/third_party/noto-emoji/fonts/NotoColorEmoji.ttf"
+    "${CMAKE_SOURCE_DIR}/../taskWizard/third_party/noto-emoji/fonts/NotoColorEmoji.ttf"
+)
+    if(EXISTS "${candidate}")
+        set(EMOJI_FONT "${candidate}")
+        break()
+    endif()
+endforeach()
+
+# Automatically copy font into fonts/ if found in a sibling repository
+if(EXISTS "${EMOJI_FONT}" AND NOT EXISTS "${CMAKE_SOURCE_DIR}/fonts/NotoColorEmoji.ttf" AND NOT EXISTS "${CMAKE_SOURCE_DIR}/third_party/noto-emoji/fonts/NotoColorEmoji.ttf")
+    file(COPY "${EMOJI_FONT}" DESTINATION "${CMAKE_SOURCE_DIR}/fonts")
+    set(EMOJI_FONT "${CMAKE_SOURCE_DIR}/fonts/NotoColorEmoji.ttf")
+endif()
+
+if(EXISTS "${EMOJI_FONT}")
+    set_source_files_properties("${EMOJI_FONT}"
+        PROPERTIES QT_RESOURCE_ALIAS "NotoColorEmoji.ttf"
+    )
+    qt_add_resources(DecisionHelper "appfonts"
+        PREFIX "/fonts"
+        FILES "${EMOJI_FONT}"
+        BIG_RESOURCES
+    )
+    target_compile_definitions(DecisionHelper PRIVATE HAS_EMOJI_FONT)
+    message(STATUS "Emoji font found: ${EMOJI_FONT}")
+else()
+    message(WARNING "Emoji font not found at ${EMOJI_FONT}. Emojis may render as boxes in WASM.")
+endif()
 
 target_link_libraries(DecisionHelper PRIVATE
     Qt6::Core Qt6::Quick Qt6::QuickControls2
 )
 
 if(EMSCRIPTEN)
-    # Qt's cmake integration sets WASM=1, MODULARIZE, EXPORT_NAME, and
-    # EXPORTED_RUNTIME_METHODS automatically — adding them again causes conflicts.
-    # Only set what Qt does not already provide.
-    set_target_properties(DecisionHelper PROPERTIES OUTPUT_NAME "index")
+    target_compile_definitions(DecisionHelper PRIVATE DECISIONHELPER_WASM)
+    target_link_options(DecisionHelper PRIVATE
+        "SHELL:-s ALLOW_MEMORY_GROWTH=1"
+    )
+    set_target_properties(DecisionHelper PROPERTIES
+        OUTPUT_NAME "index"
+        QT_WASM_INITIAL_MEMORY "64MB"
+    )
 endif()

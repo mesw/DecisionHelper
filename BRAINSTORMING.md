@@ -1,5 +1,7 @@
 # DecisionHelper — Brainstorming & Specification
 
+> **Update Note (Gemini Migration):** The original concept explored complex statistical analysis (rank correlation, regression, continuous sliders). This proved overly complex and noisy for typical decision sizes. The project has pivoted to a streamlined 6-step workflow based on discrete micro-decisions and pairwise criteria weighting. See [GEMINI.md](file:///c:/Users/MiCHi/Documents/decisionHelper/GEMINI.md), [ALGORITHMS.md](file:///c:/Users/MiCHi/Documents/decisionHelper/ALGORITHMS.md), and [PAPER_PROTOTYPE.md](file:///c:/Users/MiCHi/Documents/decisionHelper/PAPER_PROTOTYPE.md) for the active specifications.
+
 ## Core Concept
 
 A webapp that helps users make decisions and then *explains* those decisions — surfacing the true underlying reasoning, including factors the user may not have consciously recognized.

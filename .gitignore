@@ -1,0 +1,47 @@
+# Qt Creator & IDE
+*.user
+*.user.*
+.qtcreator/
+.vscode/
+.idea/
+*.autosave
+
+# Desktop build directories (never track)
+build/Desktop*
+build/Desktop*/**
+
+# Ignore all build contents by default
+build/*
+
+# Allow entering WebAssembly build directories
+!build/WebAssembly*/
+!build/*wasm*/
+!build/*WASM*/
+
+# Ignore all intermediate compilation artifacts within WASM directories
+build/WebAssembly*/*
+build/*wasm*/*
+build/*WASM*/*
+
+# Whitelist ONLY the 5 runtime files required to host the web app
+!build/WebAssembly*/index.html
+!build/WebAssembly*/index.js
+!build/WebAssembly*/index.wasm
+!build/WebAssembly*/qtloader.js
+!build/WebAssembly*/qtlogo.svg
+!build/*wasm*/index.html
+!build/*wasm*/index.js
+!build/*wasm*/index.wasm
+!build/*wasm*/qtloader.js
+!build/*wasm*/qtlogo.svg
+!build/*WASM*/index.html
+!build/*WASM*/index.js
+!build/*WASM*/index.wasm
+!build/*WASM*/qtloader.js
+!build/*WASM*/qtlogo.svg
+
+# Temporary files
+*.swp
+*~
+.DS_Store
+Thumbs.db
