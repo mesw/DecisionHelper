@@ -7,6 +7,7 @@ Page {
     id: root
 
     header: AppHeader {
+        id: appHeader
         title: "Step 6: Decision Results"
         subtitle: sessionController.decisionTitle
     }
@@ -38,9 +39,14 @@ Page {
                     spacing: 6
 
                     RowLayout {
-                        spacing: 8
+                        spacing: 6
                         Label {
-                            text: "🏆 RECOMMENDED CHOICE"
+                            text: "🏆"
+                            font.pixelSize: 16
+                            font.family: typeof emojiFontFamily !== "undefined" && emojiFontFamily.length > 0 ? emojiFontFamily : "Noto Color Emoji"
+                        }
+                        Label {
+                            text: "RECOMMENDED CHOICE"
                             font.pixelSize: 12
                             font.bold: true
                             color: Material.color(Material.Amber, Material.Shade900)
@@ -293,6 +299,15 @@ Page {
                     Layout.fillWidth: true
                     onClicked: sessionController.adjustMicroDecisions()
                 }
+            }
+
+            Button {
+                text: "Free & Open Source Software • Licensed under GNU GPL v3.0 (License Info)"
+                flat: true
+                font.pixelSize: 11
+                Material.foreground: Material.color(Material.Grey, Material.Shade600)
+                Layout.alignment: Qt.AlignHCenter
+                onClicked: appHeader.openLicenseDialog()
             }
 
             Item { height: 16 } // Bottom spacer

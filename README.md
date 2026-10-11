@@ -77,3 +77,16 @@ The app uses transparent pairwise scoring (Win: 1.0, Tie: 0.5, Loss: 0.0) combin
    git push origin master
    ```
    The root `index.html` automatically serves and redirects visitors to the application.
+
+---
+
+## 📄 License & Attribution
+
+- **Author:** Michael Egger (MESW)
+- **Copyright:** Copyright © 2026 Michael Egger (MESW). All rights reserved.
+- **License:** Licensed under the **GNU General Public License v3.0 (GPL-3.0)**. See the [LICENSE](LICENSE) file for details.
+
+### Third-Party Components
+- **Qt 6 Framework:** Licensed under the GNU Lesser General Public License v3.0 (LGPLv3) / GNU General Public License v3.0 (GPLv3) — © 2024 The Qt Company Ltd. and other contributors.
+- **Roboto Font:** Licensed under the Apache License, Version 2.0 — © 2015 Google LLC.
+- **Google Noto Color Emoji Font:** Licensed under the SIL Open Font License, Version 1.1 (OFL-1.1) — © 2013-2024 Google LLC.

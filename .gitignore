@@ -8,37 +8,51 @@
 
 # Desktop build directories (never track)
 build/Desktop*
-build/Desktop*/**
 
-# Ignore all build contents by default
-build/*
+# WebAssembly build artifacts: explicitly ignore intermediate compiler files
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/.cmake/
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/.qt/
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/.qtc/
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/.qtc_clangd/
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/.rcc/
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/CMakeFiles/
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/DecisionHelper/
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/DecisionHelper_autogen/
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/Testing/
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/meta_types/
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/qmltypes/
 
-# Allow entering WebAssembly build directories
-!build/WebAssembly*/
-!build/*wasm*/
-!build/*WASM*/
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/.ninja*
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/build.ninja*
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/CMakeCache*
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/cmake_install.cmake
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/decisionhelper_qmltyperegistrations.cpp
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/qtcsettings.cmake
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/*.o
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/*.obj
+build/WebAssembly_Qt_6_8_3_single_threaded-Debug/*.a
 
-# Ignore all intermediate compilation artifacts within WASM directories
-build/WebAssembly*/*
-build/*wasm*/*
-build/*WASM*/*
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/.cmake/
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/.qt/
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/.qtc/
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/.qtc_clangd/
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/.rcc/
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/CMakeFiles/
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/DecisionHelper/
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/DecisionHelper_autogen/
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/Testing/
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/meta_types/
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/qmltypes/
 
-# Whitelist ONLY the 5 runtime files required to host the web app
-!build/WebAssembly*/index.html
-!build/WebAssembly*/index.js
-!build/WebAssembly*/index.wasm
-!build/WebAssembly*/qtloader.js
-!build/WebAssembly*/qtlogo.svg
-!build/*wasm*/index.html
-!build/*wasm*/index.js
-!build/*wasm*/index.wasm
-!build/*wasm*/qtloader.js
-!build/*wasm*/qtlogo.svg
-!build/*WASM*/index.html
-!build/*WASM*/index.js
-!build/*WASM*/index.wasm
-!build/*WASM*/qtloader.js
-!build/*WASM*/qtlogo.svg
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/.ninja*
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/build.ninja*
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/CMakeCache*
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/cmake_install.cmake
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/decisionhelper_qmltyperegistrations.cpp
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/qtcsettings.cmake
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/*.o
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/*.obj
+build/WebAssembly_Qt_6_8_3_single_threaded-Release/*.a
 
 # Temporary files
 *.swp

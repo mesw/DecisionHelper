@@ -7,6 +7,7 @@ Page {
     id: root
 
     header: AppHeader {
+        id: appHeader
         title: "Step 1: Decision Name"
         subtitle: "What are you trying to decide?"
     }
@@ -67,5 +68,16 @@ Page {
         }
 
         Item { Layout.fillHeight: true } // Bottom spacer
+
+        Button {
+            text: "Free & Open Source Software • Licensed under GNU GPL v3.0 (License Info)"
+            flat: true
+            font.pixelSize: 11
+            Material.foreground: Material.color(Material.Grey, Material.Shade600)
+            Layout.alignment: Qt.AlignHCenter
+            onClicked: appHeader.openLicenseDialog()
+        }
+
+        Item { height: 8 }
     }
 }

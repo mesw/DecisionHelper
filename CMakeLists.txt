@@ -31,26 +31,23 @@ qt_add_qml_module(DecisionHelper
 )
 
 # ── Emoji Font (WASM & Cross-Platform) ─────────────────────────────────────────
+# Source: third_party/noto-emoji (Google Noto Emoji submodule)
+# License: SIL Open Font License 1.1 — free to embed in any application.
+#   https://github.com/googlefonts/noto-emoji/blob/main/fonts/LICENSE
+#
 # WASM environments do not have host system emoji fonts (e.g. Segoe UI Emoji / Apple Color Emoji).
 # We bundle Google Noto Color Emoji to render emojis cleanly in the browser.
 set(EMOJI_FONT "")
 foreach(candidate
-    "${CMAKE_SOURCE_DIR}/fonts/NotoColorEmoji.ttf"
+    "${CMAKE_SOURCE_DIR}/third_party/noto-emoji/2D/fonts/NotoColorEmoji_WindowsCompatible.ttf"
+    "${CMAKE_SOURCE_DIR}/third_party/noto-emoji/2D/fonts/NotoColorEmoji.ttf"
     "${CMAKE_SOURCE_DIR}/third_party/noto-emoji/fonts/NotoColorEmoji.ttf"
-    "${CMAKE_SOURCE_DIR}/../checklist/third_party/noto-emoji/fonts/NotoColorEmoji.ttf"
-    "${CMAKE_SOURCE_DIR}/../taskWizard/third_party/noto-emoji/fonts/NotoColorEmoji.ttf"
 )
     if(EXISTS "${candidate}")
         set(EMOJI_FONT "${candidate}")
         break()
     endif()
 endforeach()
-
-# Automatically copy font into fonts/ if found in a sibling repository
-if(EXISTS "${EMOJI_FONT}" AND NOT EXISTS "${CMAKE_SOURCE_DIR}/fonts/NotoColorEmoji.ttf" AND NOT EXISTS "${CMAKE_SOURCE_DIR}/third_party/noto-emoji/fonts/NotoColorEmoji.ttf")
-    file(COPY "${EMOJI_FONT}" DESTINATION "${CMAKE_SOURCE_DIR}/fonts")
-    set(EMOJI_FONT "${CMAKE_SOURCE_DIR}/fonts/NotoColorEmoji.ttf")
-endif()
 
 if(EXISTS "${EMOJI_FONT}")
     set_source_files_properties("${EMOJI_FONT}"
