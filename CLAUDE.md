@@ -18,8 +18,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build Commands
 
+**Primary workflow:** Open the project in Qt Creator with the Qt for WebAssembly (single-threaded) kit configured. Qt Creator handles CMake configuration and invokes Emscripten automatically.
+
+**CLI equivalent** (for CI or when Qt Creator is unavailable — requires Emscripten and Qt WASM kit on PATH):
 ```bash
-# Configure (Qt for WebAssembly kit must be set up with Emscripten)
+# Configure
 emcmake cmake -B build-wasm -DCMAKE_BUILD_TYPE=Release
 
 # Build
@@ -73,3 +76,7 @@ See [ALGORITHMS.md](ALGORITHMS.md) for full algorithm options, math, WASM feasib
 - Computes a values-based alternative ranking from declared priorities; surfaces gap vs gut ranking
 - Updates incrementally as more attributions are filled in
 - Pair selection uses information gain to minimise questions while reaching a confidence threshold
+
+## Workflow Conventions
+
+- After completing each implementation phase, run `/simplify` to review the changed code for reuse, quality, and efficiency before moving on.
